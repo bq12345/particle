@@ -10,8 +10,6 @@ let getRandomColor = ()=> {
 };
 
 function initAnimate() {
-    console.log(dots.length);
-    console.log(dots instanceof Array);
 
     for (let i = 0; i < dots.length; i++) {
         let dot = dots[i];
@@ -41,15 +39,16 @@ function animate() {
                 dot.x = dot.dx;
                 dot.y = dot.dy;
                 dot.z = dot.dz;
-                if (thisTime - lastTime > 300) derection = false;
+                if (thisTime - lastTime > 300) {
+                    derection = false;
+                }
             } else {
                 dot.x = dot.x + (dot.dx - dot.x) * 0.1;
                 dot.y = dot.y + (dot.dy - dot.y) * 0.1;
                 dot.z = dot.z + (dot.dz - dot.z) * 0.1;
                 lastTime = +new Date()
             }
-        }
-        else {
+        } else {
             if (Math.abs(dot.tx - dot.x) < 0.1 && Math.abs(dot.ty - dot.y) < 0.1 && Math.abs(dot.tz - dot.z) < 0.1) {
                 dot.x = dot.tx;
                 dot.y = dot.ty;
@@ -94,7 +93,7 @@ function getimgData(text) {
         for (let y = 0; y < imgData.height; y += 6) {
             let i = (y * imgData.width + x) * 4;
             if (imgData.data[i] >= 128) {
-                let dot = new Dot(x - 3, y - 3, 0, 3);
+                let dot = new Dot(x - 2, y - 2, 0, 2);
                 dots.push(dot);
             }
         }
@@ -114,6 +113,7 @@ let Dot = function (centerX, centerY, centerZ, radius) {
     this.x = centerX;
     this.y = centerY;
     this.radius = radius;
+    this.color = getRandomColor();
 };
 
 Dot.prototype.paint = function () {
@@ -121,7 +121,7 @@ Dot.prototype.paint = function () {
     context.beginPath();
     let scale = focallength / (focallength + this.z);
     context.arc(canvas.width / 2 + (this.x - canvas.width / 2) * scale, canvas.height / 2 + (this.y - canvas.height / 2) * scale, this.radius * scale, 0, 2 * Math.PI);
-    context.fillStyle = "rgba(50,50,50," + scale + ")";
+    context.fillStyle = this.color;
     context.fill();
     context.restore();
 };
@@ -129,4 +129,8 @@ Dot.prototype.paint = function () {
 
 dots = getimgData(document.getElementById('name').value);
 
-initAnimate();
+// initAnimate();
+
+dots.forEach((dot)=>{
+    dot.paint();
+});
